@@ -12,25 +12,7 @@ let page = 1;
 let isLoading = false;
 let currentQuery = '';
 let totalHits = 0;
-
-/*
-refs.form.addEventListener('input', () => {
-  const queryInput = refs.inputQuery.value.trim();
-  if (queryInput === '') {
-    refs.btnSearch.setAttribute('disabled', true);
-    refs.inputQuery.value = '';
-    iziToast.warning({
-      title: 'Caution',
-      message: 'Sorry, the input cannot be empty or contain only spaces!',
-      position: 'bottomLeft',
-      maxWidth: 300,
-      timeout: 1500,
-    });
-  } else {
-    refs.btnSearch.removeAttribute('disabled');
-  }
-});
-*/
+export const per_page = 15;
 
 
 refs.form.addEventListener('submit', event => {
@@ -54,14 +36,13 @@ refs.form.addEventListener('submit', event => {
     refs.inputQuery.value = '';
 });
 
-const loadImages = () => {
+const loadImages = async () => {
   if (isLoading) {
     return;
   }
   isLoading = true;
   showLoader();
-  fetchImages(currentQuery, page)
-    .then(data => {
+  try { const data = await fetchImages(currentQuery, page, per_page)
       const images = data.hits;
       totalHits = data.totalHits;
       if (images.length === 0) {
@@ -74,39 +55,54 @@ const loadImages = () => {
           borderColor: '#FFBEBE',
           maxWidth: 432,
           class: 'custom-toast',
-          position: 'topRight',
           theme: 'dark',
           iconUrl: iconError,
         });
         return;
-      } else {
+      } 
         renderImages(images);
-        const totalLoadImages = (page - 1) * 21 + images.length;
-        if (totalLoadImages >= totalHits) {
+        const card = document.querySelector('.gallery-item');
+        const cardsHeight = card.getBoundingClientRect().height;
+        if (page >1 ) {
+          window.scrollBy({
+          top: cardsHeight * 2,
+          left: 0,
+          behavior: 'smooth'
+        });
+        } 
+        const totalPages = Math.ceil(totalHits / per_page);;
+        if (page >= totalPages) {
           iziToast.info({
             title: 'End of results',
-            message: 'You have reached the end of the search results!',
+            message: "We're sorry, but you've reached the end of search results.",
             position: 'bottomRight',
             backgroundColor: '#ff3d00',
             messageColor: '#FAFAFB',
           });
+          refs.btnLoad.style.display = 'none';
+        } else {
+          refs.btnLoad.style.display = "block";
+          page += 1;
         }
-        page += 1;
-      }
-    })
-    .catch(error => {
+ } catch (error)  {
       console.error('Error:', error);
       iziToast.error({
         title: 'error',
         message: error.message || 'Something went wrong. Please try again.',
         
       });
-    })
-    .finally(() => {
+    }
+    finally {
       isLoading = false;
       hideLoader();
-    });
+    }
 };
+
+refs.btnLoad.addEventListener('click', loadImages)
+window.addEventListener('scroll', scrollShow);
+refs.btnScrollUp.addEventListener('click', scrollToTop);
+
+/*
 const loadScroll = () => {
     if (isLoading) {
         return;
@@ -118,6 +114,4 @@ const loadScroll = () => {
   }
 };
 window.addEventListener('scroll', loadScroll);
-
-window.addEventListener('scroll', scrollShow);
-refs.btnScrollUp.addEventListener('click', scrollToTop);
+*/

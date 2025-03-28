@@ -5,4 +5,5 @@ export const refs = {
     gallery: document.querySelector('.gallery'),
     loader: document.querySelector('.loader'),
     btnScrollUp: document.getElementById('scrollToTop'),
+    btnLoad: document.querySelector('.btn-load'),
 }

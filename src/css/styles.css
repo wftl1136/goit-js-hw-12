@@ -44,17 +44,22 @@ form input:active {
   outline: 2px solid #4e75ff;
 }
 
-.btn-search {
-  max-width: 91px;
-  max-height: 40px;
+button {
+  display: block;
   padding: 8px 16px;
   background: #4e75ff;
+  font-size: 16px;
   font-weight: 500;
   line-height: 24px;
   letter-spacing: 4%;
   border-radius: 8px;
   border: none;
   color: #ffffff;
+}
+
+.btn-search {
+  max-width: 91px;
+  max-height: 40px;
 }
 
 .btn-search:hover {
@@ -67,7 +72,7 @@ form input:active {
 
 
 .loader {
-  position: fixed;
+  position: relative;
   left: 50%;
   transform: translate(0, -50%);
   margin: 0, auto;
@@ -250,4 +255,11 @@ form input:active {
 .scroll-to-top.show {
   opacity: 1;
   visibility: visible;
+}
+
+.btn-load {
+  display: none;
+  width: 125px;
+  max-height: 40px;
+  margin: 32px auto 20px;
 }
